@@ -1,0 +1,25 @@
+<suitelet scriptid="customscript_jj_sl_otp_8981">
+  <description></description>
+  <isinactive>F</isinactive>
+  <name>JJ SL OTP-8981</name>
+  <notifyadmins>F</notifyadmins>
+  <notifyemails></notifyemails>
+  <notifyowner>T</notifyowner>
+  <notifyuser>F</notifyuser>
+  <scriptfile>[/SuiteScripts/JobinAndJismi/OTP-8981/jj_sl_otp_8981.js]</scriptfile>
+  <scriptdeployments>
+    <scriptdeployment scriptid="customdeploy_jj_sl_otp_8981">
+      <allemployees>F</allemployees>
+      <allpartners>F</allpartners>
+      <allroles>T</allroles>
+      <audslctrole>CUSTOMER_CENTER|[scriptid=customrole1018]|EMPLOYEE_CENTER|[scriptid=customrole1196]|[scriptid=customrole1067]|NETSUITE_SUPPORT_CENTER|NETSUITE_SUPPORT_CENTER__BASIC|ONLINE_FORM_USER|PARTNER_CENTER|VENDOR_CENTER|[scriptid=customrole1040]</audslctrole>
+      <eventtype></eventtype>
+      <isdeployed>T</isdeployed>
+      <isonline>T</isonline>
+      <loglevel>ERROR</loglevel>
+      <runasrole>ADMINISTRATOR</runasrole>
+      <status>RELEASED</status>
+      <title>JJ SL OTP-8981</title>
+    </scriptdeployment>
+  </scriptdeployments>
+</suitelet>
