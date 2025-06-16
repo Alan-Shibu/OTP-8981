@@ -260,7 +260,7 @@
       <encryptatrest>F</encryptatrest>
       <fieldtype>DATE</fieldtype>
       <globalsearch>F</globalsearch>
-      <help></help>
+      <help>Date of the latest blood donation by the donor.</help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
       <isparent>F</isparent>

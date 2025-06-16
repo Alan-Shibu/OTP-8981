@@ -1,0 +1,49 @@
+<customlist scriptid="customlist_jj_blood_grp">
+  <description></description>
+  <isinactive>F</isinactive>
+  <ismatrixoption>F</ismatrixoption>
+  <isordered>T</isordered>
+  <name>Blood Group</name>
+  <customvalues>
+    <customvalue scriptid="val_403941_td3000270_968">
+      <abbreviation>A</abbreviation>
+      <isinactive>F</isinactive>
+      <value>A +ve</value>
+    </customvalue>
+    <customvalue scriptid="val_403942_td3000270_396">
+      <abbreviation>A</abbreviation>
+      <isinactive>F</isinactive>
+      <value>A -ve</value>
+    </customvalue>
+    <customvalue scriptid="val_403943_td3000270_941">
+      <abbreviation>B</abbreviation>
+      <isinactive>F</isinactive>
+      <value>B +ve</value>
+    </customvalue>
+    <customvalue scriptid="val_403944_td3000270_715">
+      <abbreviation>B</abbreviation>
+      <isinactive>F</isinactive>
+      <value>B -ve</value>
+    </customvalue>
+    <customvalue scriptid="val_403945_td3000270_663">
+      <abbreviation>O</abbreviation>
+      <isinactive>F</isinactive>
+      <value>O +ve</value>
+    </customvalue>
+    <customvalue scriptid="val_403946_td3000270_198">
+      <abbreviation>O</abbreviation>
+      <isinactive>F</isinactive>
+      <value>O -ve</value>
+    </customvalue>
+    <customvalue scriptid="val_403947_td3000270_496">
+      <abbreviation>A</abbreviation>
+      <isinactive>F</isinactive>
+      <value>AB +ve</value>
+    </customvalue>
+    <customvalue scriptid="val_403948_td3000270_270">
+      <abbreviation>A</abbreviation>
+      <isinactive>F</isinactive>
+      <value>AB -ve</value>
+    </customvalue>
+  </customvalues>
+</customlist>

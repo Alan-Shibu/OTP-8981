@@ -9,7 +9,7 @@
   <scriptfile>[/SuiteScripts/JobinAndJismi/OTP-8981/jj_sl_otp_8981.js]</scriptfile>
   <scriptdeployments>
     <scriptdeployment scriptid="customdeploy_jj_sl_otp_8981">
-      <allemployees>F</allemployees>
+      <allemployees>T</allemployees>
       <allpartners>F</allpartners>
       <allroles>T</allroles>
       <audslctrole>CUSTOMER_CENTER|[scriptid=customrole1018]|EMPLOYEE_CENTER|[scriptid=customrole1196]|[scriptid=customrole1067]|NETSUITE_SUPPORT_CENTER|NETSUITE_SUPPORT_CENTER__BASIC|ONLINE_FORM_USER|PARTNER_CENTER|VENDOR_CENTER|[scriptid=customrole1040]</audslctrole>

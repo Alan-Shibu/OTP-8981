@@ -25,15 +25,13 @@
  * @version 1.0   : 09-June-2025 : The initial build was created by JJ0401
  *
  *
- *************************************************************************************
- **********/
-define(["N/log", "N/record", "N/ui/serverWidget"], 
- /**
+ *************************************************************************************/
+define(["N/log", "N/record", "N/ui/serverWidget", "N/search"]
+/**
  * @param{log} log
  * @param{record} record
  * @param{serverWidget} serverWidget
- */
-(log, record, serverWidget) => {
+ */, (log, record, serverWidget, search) => {
   /**
    * Defines the Suitelet script trigger point.
    * @param {Object} scriptContext
@@ -64,43 +62,45 @@ define(["N/log", "N/record", "N/ui/serverWidget"],
           title: "Blood Requirement Registration Form",
         });
 
-        let fstNameField = form.addField({
+        form.clientScriptFileId = 24204;
+
+        let fstNameField = (form.addField({
           id: "custpage_fst_name",
           type: serverWidget.FieldType.TEXT,
           label: "First Name",
-        });
+        }).isMandatory = true);
 
-        let lastNameField = form.addField({
+        let lastNameField = (form.addField({
           id: "custpage_lst_name",
           type: serverWidget.FieldType.TEXT,
           label: "Last Name",
-        });
+        }).isMandatory = true);
 
-        let genderField = form.addField({
+        let genderField = (form.addField({
           id: "custpage_gender",
           type: serverWidget.FieldType.SELECT,
           label: "Gender",
           source: "customlist_jj_gender",
-        });
+        }).isMandatory = true);
 
-        let phoneNoField = form.addField({
+        let phoneNoField = (form.addField({
           id: "custpage_phn_no",
           type: serverWidget.FieldType.PHONE,
           label: "Phone Number",
-        });
+        }).isMandatory = true);
 
-        let bloodGrpField = form.addField({
+        let lastDonationDayField = (form.addField({
+          id: "custpage_last_donation",
+          type: serverWidget.FieldType.DATE,
+          label: "Last Donation Date",
+        }).isMandatory = true);
+
+        let bloodGrpField = (form.addField({
           id: "custpage_bld_grp",
           type: serverWidget.FieldType.SELECT,
           label: "Blood Group",
           source: "customlist_jj_blood_grp",
-        });
-
-        let lastDonationDayField = form.addField({
-          id: "custpage_last_donation",
-          type: serverWidget.FieldType.DATE,
-          label: "Last Donation Date",
-        });
+        }).isMandatory = true);
 
         form.addSubmitButton({
           label: "Submit Donor data",
@@ -136,44 +136,124 @@ define(["N/log", "N/record", "N/ui/serverWidget"],
 
         let newDate = convertDate(lastDonationDay);
 
-        let bloodRequirementRecord = record.create({
-          type: "customrecord_jj_blood_requirement",
-          isDynamic: true,
-        });
+        let duplicate = checkDuplicate(firstName, lastName, phoneNumber);
 
-        bloodRequirementRecord.setValue({
-          fieldId: "custrecord_jj_fst_name",
-          value: firstName,
-        });
-        bloodRequirementRecord.setValue({
-          fieldId: "custrecord_jj_lst_name",
-          value: lastName,
-        });
-        bloodRequirementRecord.setValue({
-          fieldId: "custrecord_jj_blood_donor_gender",
-          value: gender,
-        });
-        bloodRequirementRecord.setValue({
-          fieldId: "custrecord_jj_donor_phn_no",
-          value: phoneNumber,
-        });
-        bloodRequirementRecord.setValue({
-          fieldId: "custrecord_jj_bld_grp",
-          value: bloodGroup,
-        });
-        bloodRequirementRecord.setValue({
-          fieldId: "custrecord_jj_last_bld_donation_date",
-          value: newDate,
-        });
+        if (duplicate != "") {
+          let form = serverWidget.createForm({
+            title: "Blood Donor Registration",
+          });
 
-        bloodRequirementRecord.save({
-          ignoreMandatoryFields: true,
-        });
+          let resultField = (form.addField({
+            id: "custpage_display_result",
+            type: serverWidget.FieldType.INLINEHTML,
+            label: "Text",
+          }).defaultValue = `<div> 
+                    <p>Sorry, this donor already exists !</p>
+                 </div>
+                `);
+          scriptContext.response.writePage({
+            pageObject: form,
+          });
+        } else {
+          let form = serverWidget.createForm({
+            title: "Blood Donor Registration",
+          });
 
-        log.debug("Record ");
+          let resultField = (form.addField({
+            id: "custpage_display_result",
+            type: serverWidget.FieldType.INLINEHTML,
+            label: "Record Created !",
+          }).defaultValue = `<div>
+                    <h1>Donor Details </h1>
+                    <p>First Name :${firstName}</p>
+                    <p>Last Name :${lastName}</p>
+                    <p>Gender :${gender}</p>
+                    <p>Phone Number :${phoneNumber}</p>
+                    <p>Blood Group :${bloodGroup}</p>
+                    <p>Last Donation Date :${lastDonationDay}</p>
+                </div>
+                `);
+          let bloodRequirementRecord = record.create({
+            type: "customrecord_jj_blood_requirement",
+            isDynamic: true,
+          });
+
+          bloodRequirementRecord.setValue({
+            fieldId: "custrecord_jj_fst_name",
+            value: firstName,
+          });
+          bloodRequirementRecord.setValue({
+            fieldId: "custrecord_jj_lst_name",
+            value: lastName,
+          });
+          bloodRequirementRecord.setValue({
+            fieldId: "custrecord_jj_blood_donor_gender",
+            value: gender,
+          });
+          bloodRequirementRecord.setValue({
+            fieldId: "custrecord_jj_donor_phn_no",
+            value: phoneNumber,
+          });
+          bloodRequirementRecord.setValue({
+            fieldId: "custrecord_jj_bld_grp",
+            value: bloodGroup,
+          });
+          bloodRequirementRecord.setValue({
+            fieldId: "custrecord_jj_last_bld_donation_date",
+            value: newDate,
+          });
+
+          bloodRequirementRecord.save({
+            ignoreMandatoryFields: true,
+          });
+
+          scriptContext.response.writePage({
+            pageObject: form,
+          });
+        }
       } catch (e) {
         log.error("Error caught", e.message);
       }
+    }
+
+    /**
+     * Function to show an alert
+     * @param {string} message - the message that needs to be alerted
+     * @returns {void}
+     */
+    function checkDuplicate(fname, lname, phn) {
+      let duplicateSearch = search.create({
+        type: "customrecord_jj_blood_requirement",
+        title: "Search for duplicate donors JJ",
+        id: "_jj_donor_duplicates",
+        filters: [
+          ["custrecord_jj_fst_name", "is", fname],
+          "AND",
+          ["custrecord_jj_lst_name", "is", lname],
+          "AND",
+          ["custrecord_jj_donor_phn_no", "is", phn],
+        ],
+        columns: [
+          search.createColumn({
+            name: "custrecord_jj_fst_name",
+            label: "First Name",
+          }),
+          search.createColumn({
+            name: "custrecord_jj_lst_name",
+            label: "Last Name",
+          }),
+        ],
+      });
+
+      let fullName = "";
+
+      duplicateSearch.run().each(function (result) {
+        let firstname = result.getValue({ name: "custrecord_jj_fst_name" });
+        let lastname = result.getValue({ name: "custrecord_jj_lst_name" });
+        fullName = firstname + " " + lastname;
+      });
+
+      return fullName;
     }
 
     /**
@@ -185,7 +265,7 @@ define(["N/log", "N/record", "N/ui/serverWidget"],
       try {
         let dateObj = new Date(date);
         let month = dateObj.getMonth() + 1;
-        let day = dateObj.getDate(); // Correct method for day of the month
+        let day = dateObj.getDate() + 1; // Correct method for day of the month
         let year = dateObj.getFullYear();
 
         let newMonth = month < 10 ? "0" + month.toString() : month.toString();
