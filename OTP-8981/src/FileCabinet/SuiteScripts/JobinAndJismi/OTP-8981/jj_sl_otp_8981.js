@@ -26,12 +26,11 @@
  *
  *
  *************************************************************************************/
-define(["N/log", "N/record", "N/ui/serverWidget", "N/search"]
-/**
+define(["N/log", "N/record", "N/ui/serverWidget", "N/search"], /**
  * @param{log} log
  * @param{record} record
  * @param{serverWidget} serverWidget
- */, (log, record, serverWidget, search) => {
+ */ (log, record, serverWidget, search) => {
   /**
    * Defines the Suitelet script trigger point.
    * @param {Object} scriptContext
@@ -155,24 +154,6 @@ define(["N/log", "N/record", "N/ui/serverWidget", "N/search"]
             pageObject: form,
           });
         } else {
-          let form = serverWidget.createForm({
-            title: "Blood Donor Registration",
-          });
-
-          let resultField = (form.addField({
-            id: "custpage_display_result",
-            type: serverWidget.FieldType.INLINEHTML,
-            label: "Record Created !",
-          }).defaultValue = `<div>
-                    <h1>Donor Details </h1>
-                    <p>First Name :${firstName}</p>
-                    <p>Last Name :${lastName}</p>
-                    <p>Gender :${gender}</p>
-                    <p>Phone Number :${phoneNumber}</p>
-                    <p>Blood Group :${bloodGroup}</p>
-                    <p>Last Donation Date :${lastDonationDay}</p>
-                </div>
-                `);
           let bloodRequirementRecord = record.create({
             type: "customrecord_jj_blood_requirement",
             isDynamic: true,
@@ -203,13 +184,17 @@ define(["N/log", "N/record", "N/ui/serverWidget", "N/search"]
             value: newDate,
           });
 
-          bloodRequirementRecord.save({
+          let newRecId = bloodRequirementRecord.save({
             ignoreMandatoryFields: true,
           });
 
-          scriptContext.response.writePage({
-            pageObject: form,
-          });
+          displayResults(
+            newRecId,
+            firstName,
+            lastName,
+            phoneNumber,
+            lastDonationDay
+          );
         }
       } catch (e) {
         log.error("Error caught", e.message);
@@ -278,6 +263,48 @@ define(["N/log", "N/record", "N/ui/serverWidget", "N/search"]
       } catch (e) {
         log.error("Error caught", e.message);
       }
+    }
+
+    /**
+     * Function to display the form details
+     * @param {int} recordId - inyternal id of the created donor record
+     * @param {string} first - first name of the donor
+     * @param {string} last - last name of the donor
+     * @param {string} phone - phone number of the donor
+     * @param {date Object} lastDay - last donation date of the donor
+     * @returns {void}
+     */
+    function displayResults(recordId, first, last, phone, lastDay) {
+      let form = serverWidget.createForm({
+        title: "Blood Donor Registration",
+      });
+
+      let donorDetails = search.lookupFields({
+        type: "customrecord_jj_blood_requirement",
+        id: recordId,
+        columns: ["custrecord_jj_blood_donor_gender", "custrecord_jj_bld_grp"],
+      });
+
+      let genderText = donorDetails.custrecord_jj_blood_donor_gender[0].text;
+      let bloodGroupText = donorDetails.custrecord_jj_bld_grp[0].text;
+
+      let resultField = (form.addField({
+        id: "custpage_display_result",
+        type: serverWidget.FieldType.INLINEHTML,
+        label: "Record Created !",
+      }).defaultValue = `<div>
+                    <h1>Donor Details </h1>
+                    <p>First Name :${first}</p>
+                    <p>Last Name :${last}</p>
+                    <p>Gender :${genderText}</p>
+                    <p>Phone Number :${phone}</p>
+                    <p>Blood Group :${bloodGroupText}</p>
+                    <p>Last Donation Date :${lastDay}</p>
+                </div>
+                `);
+      scriptContext.response.writePage({
+        pageObject: form,
+      });
     }
   };
   return { onRequest };
